@@ -1,15 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for
-import datetime
+from flask import Flask, render_template, request, redirect, url_for, flash
+from datetime import datetime, timedelta
 import hashlib
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'
 
-# 存储密码和对应的有效期
-# password_data = {"aiyc": "100"}
-password_data = {
-    "4a4c378d47827e8dc646c6112d0fd807fd6f1e21f42af831e9fd9d0d96b2f71a": datetime.datetime.now() + datetime.timedelta(days=7)
-}
-
+password_data = {}
 
 
 @app.route('/')
@@ -22,13 +18,12 @@ def submit_password():
     password = request.form['password']
     valid_days = int(request.form['valid_days'])
 
-    # 用哈希值作为密码的唯一标识
     password_hash = hashlib.sha256(password.encode()).hexdigest()
 
-    # 设置密码有效期
-    expiration_date = datetime.datetime.now() + datetime.timedelta(days=valid_days)
+    expiration_date = datetime.now() + timedelta(days=valid_days)
     password_data[password_hash] = expiration_date
 
+    flash(f"密码 '{password}' 已添加，有效期为 {valid_days} 天。")
     return redirect(url_for('index'))
 
 
@@ -39,12 +34,14 @@ def validate_password():
 
     if password_hash in password_data:
         expiration_date = password_data[password_hash]
-        if datetime.datetime.now() <= expiration_date:
+        if datetime.now() <= expiration_date:
             return render_template('data.html')
         else:
-            return "密码已过期，请联系管理员获取新密码。", 403
+            flash("密码已过期，请联系管理员获取新密码。")
+            return redirect(url_for('index'))
     else:
-        return "密码错误，请检查后重新输入。", 403
+        flash("密码错误，请检查后重新输入。")
+        return redirect(url_for('index'))
 
 
 if __name__ == '__main__':

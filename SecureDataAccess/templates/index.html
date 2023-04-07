@@ -1,16 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>登录</title>
-</head>
-<body>
-    <h1>请输入密码以访问数据</h1>
-    <form action="{{ url_for('validate_password') }}" method="POST">
-        <label for="password">密码:</label>
-        <input type="password" name="password" required>
-        <button type="submit">提交</button>
-    </form>
-</body>
-</html>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
