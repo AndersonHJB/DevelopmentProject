@@ -1,48 +1,46 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-from datetime import datetime, timedelta
-import hashlib
+import json
+import datetime
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'
-
-password_data = {}
+app.secret_key = "your_secret_key"
 
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+# 从JSON文件中加载数据
+def load_data():
+    with open("data.json", "r") as file:
+        data = json.load(file)
+    return data
 
 
-@app.route('/submit_password', methods=['POST'])
-def submit_password():
-    password = request.form['password']
-    valid_days = int(request.form['valid_days'])
-
-    password_hash = hashlib.sha256(password.encode()).hexdigest()
-
-    expiration_date = datetime.now() + timedelta(days=valid_days)
-    password_data[password_hash] = expiration_date
-
-    flash(f"密码 '{password}' 已添加，有效期为 {valid_days} 天。")
-    return redirect(url_for('index'))
+# 保存数据到JSON文件
+def save_data(data):
+    with open("data.json", "w") as file:
+        json.dump(data, file)
 
 
-@app.route('/validate_password', methods=['POST'])
-def validate_password():
-    password = request.form['password']
-    password_hash = hashlib.sha256(password.encode()).hexdigest()
+# 验证密码
+def is_password_valid(password):
+    data = load_data()
+    if password in data.keys():
+        expiration_date = datetime.datetime.strptime(data[password]["expiration"], "%Y-%m-%d")
+        if datetime.datetime.now() <= expiration_date:
+            return True
+    return False
 
-    if password_hash in password_data:
-        expiration_date = password_data[password_hash]
-        if datetime.now() <= expiration_date:
-            return render_template('data.html')
+
+# 首页
+@app.route("/", methods=["GET", "POST"])
+def home():
+    if request.method == "POST":
+        password = request.form["password"]
+        if is_password_valid(password):
+            content = load_data()[password]["content"]
+            return render_template("content.html", content=content)
         else:
-            flash("密码已过期，请联系管理员获取新密码。")
-            return redirect(url_for('index'))
-    else:
-        flash("密码错误，请检查后重新输入。")
-        return redirect(url_for('index'))
+            flash("密码错误或已过期。")
+    return render_template("index.html")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
