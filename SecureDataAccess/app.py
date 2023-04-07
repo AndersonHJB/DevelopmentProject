@@ -1,44 +1,36 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
-import json
-import datetime
+from flask import Flask, request, render_template, jsonify
+from markdown2 import Markdown
+from passlib.hash import sha256_crypt
+import json, time
+import os
 
 app = Flask(__name__)
-app.secret_key = "your_secret_key"
+markdown = Markdown()
+
+# 加载 json 数据
+with open("users.json", "r") as f:
+    users = json.load(f)
 
 
-# 从JSON文件中加载数据
-def load_data():
-    with open("data.json", "r") as file:
-        data = json.load(file)
-    return data
-
-
-# 保存数据到JSON文件
-def save_data(data):
-    with open("data.json", "w") as file:
-        json.dump(data, file)
-
-
-# 验证密码
-def is_password_valid(password):
-    data = load_data()
-    if password in data.keys():
-        expiration_date = datetime.datetime.strptime(data[password]["expiration"], "%Y-%m-%d")
-        if datetime.datetime.now() <= expiration_date:
-            return True
-    return False
-
-
-# 首页
 @app.route("/", methods=["GET", "POST"])
-def home():
+def index():
     if request.method == "POST":
+        user_name = request.form["username"]
         password = request.form["password"]
-        if is_password_valid(password):
-            content = load_data()[password]["content"]
-            return render_template("content.html", content=content)
-        else:
-            flash("密码错误或已过期。")
+
+        if user_name in users and sha256_crypt.verify(password, users[user_name]["password"]):
+            # 验证有效期
+            if "expiration" in users[user_name] and users[user_name]["expiration"] < time.time():
+                return "访问权限已过期", 403
+
+            with open(f"static/content/{user_name}.md", "r", encoding="utf-8") as content_file:
+                content = content_file.read()
+
+            html_content = markdown.convert(content)
+            return render_template("content.html", content=html_content)
+
+        return "无效的用户名或密码", 401
+
     return render_template("index.html")
 
 

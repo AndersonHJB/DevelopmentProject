@@ -1,9 +1,18 @@
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-<ul>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
-{% endwith %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+</head>
+<body>
+    <form action="/" method="post">
+        <label for="username">用户名:</label>
+        <input type="text" name="username" required>
+        <br>
+        <label for="password">密码:</label>
+        <input type="password" name="password" required>
+        <br>
+        <input type="submit" value="登录">
+    </form>
+</body>
+</html>
