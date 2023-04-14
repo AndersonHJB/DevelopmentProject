@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>美颜系统</title>
+</head>
+<body>
+<h1>美颜系统</h1>
+<form action="/beautify" method="post" enctype="multipart/form-data">
+    <label for="image">选择图片:</label>
+    <input type="file" name="image" id="image" required>
+    <br>
+    <label for="whitening">美白:</label>
+    <input type="range" name="whitening" id="whitening" value="0" min="0" max="255" step="1">
+    <br>
+    <label for="blemish_removal">祛斑:</label>
+    <input type="range" name="blemish_removal" id="blemish_removal" value="0" min="0" max="10" step="1">
+    <br>
+    <label for="red_saturation">纯红:</label>
+    <input type="range" name="red_saturation" id="red_saturation" value="0" min="0" max="255" step="1">
+    <br>
+    <input type="submit" value="美颜">
+</form>
+</body>
+</html>
+

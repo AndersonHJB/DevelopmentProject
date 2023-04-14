@@ -1,55 +1,34 @@
-import base64
-from time import time
-from utlib import bao, meibai, quban
+import os
 import cv2
-import numpy as np
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, request, send_from_directory, render_template
+from beautify import beautify_image
 
 app = Flask(__name__)
 
 
-@app.route('/')
-def show():
-    return render_template('show.html')
+@app.route('/', methods=['GET'])
+def index():
+    return render_template('index.html')
 
 
-@app.route('/predict/', methods=['POST'])
-def predict():
-    # 获取传送过来的完整原始图像
-    file = request.form.get('data')
-    data_url = str.split(file, ',')[1]
-    img_data = base64.urlsafe_b64decode(data_url + '=' * (4 - len(data_url) % 4))
-    img_data = np.frombuffer(img_data, np.uint8)
-    img_arr = cv2.imdecode(img_data, cv2.IMREAD_COLOR)
-    cv2.imwrite("./static/images/1.jpg", img_arr)
-    return jsonify({'action': '成功'})
+@app.route('/beautify', methods=['POST'])
+def beautify():
+    image_file = request.files['image']
+    image_path = os.path.join("uploads", image_file.filename)
+    image_file.save(image_path)
+
+    whitening = int(request.form['whitening'])
+    blemish_removal = int(request.form['blemish_removal'])
+    red_saturation = int(request.form['red_saturation'])
+
+    image = cv2.imread(image_path)
+    beautified_image = beautify_image(image, whitening=whitening, blemish_removal=blemish_removal,
+                                      red_saturation=red_saturation)
+    beautified_image_path = os.path.join("results", image_file.filename)
+    cv2.imwrite(beautified_image_path, beautified_image)
+
+    return send_from_directory("results", image_file.filename)
 
 
-@app.route('/meibai/')
-def meibais():
-    meibai.face_whitening()
-    return jsonify({'path': './static/images/meibai.jpg'})
-
-
-@app.route('/quban/')
-def qubans():
-    quban.quban()
-    return jsonify({'path': './static/images/quban.jpg'})
-
-
-@app.route('/bao/')
-def baos():
-    bao.ColorEnhancement()
-    return jsonify({'path': './static/images/bao.jpg'})
-
-
-@app.route('/mopi/')
-def mopis():
-    quban.mopi()
-    return jsonify({'path': './static/images/mopi.jpg'})
-
-
-if __name__ == '__main__':
-    app.run(port=5000)
-    # 找到这个apps ,然后点击鼠标右键，找到run 然后点击
-    # 最后点击出来的网址 http://127.0.0.1:5000
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
