@@ -1,11 +1,13 @@
 from flask import Flask, request, render_template, jsonify
+from flask_frozen import Freezer
 from markdown2 import Markdown
 from passlib.hash import sha256_crypt
-import json, time
+import json, time, sys
 import os
 
 app = Flask(__name__)
 markdown = Markdown()
+freezer = Freezer(app)
 
 # 加载 json 数据
 with open("users.json", "r") as f:
@@ -35,4 +37,8 @@ def index():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # app.run(debug=True)
+    if len(sys.argv) > 1 and sys.argv[1] == "build":
+        freezer.freeze()
+    else:
+        app.run(debug=True)
