@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flask 聊天应用</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -10,6 +11,19 @@
             overflow-y: scroll;
             border: 1px solid black;
             padding: 5px;
+        }
+
+        .message {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -28,19 +42,30 @@
     const chatForm = document.getElementById('chat-form');
     const messageInput = document.getElementById('message-input');
     const messagesDiv = document.getElementById('messages');
+    const avatarUrl = "{{ avatar_url }}";
 
     chatForm.addEventListener('submit', function (event) {
         event.preventDefault();
         const message = messageInput.value.trim();
         if (message.length > 0) {
-            socket.emit('send_message', {message: message});
+            socket.emit('send_message', {message: message, avatar_url: avatarUrl});
             messageInput.value = '';
         }
     });
 
     socket.on('receive_message', function (data) {
         const messageDiv = document.createElement('div');
-        messageDiv.textContent = data.message;
+        messageDiv.className = 'message';
+
+        const avatarImg = document.createElement('img');
+        avatarImg.src = data.avatar_url;
+        avatarImg.className = 'avatar';
+        messageDiv.appendChild(avatarImg);
+
+        const textDiv = document.createElement('div');
+        textDiv.textContent = data.message;
+        messageDiv.appendChild(textDiv);
+
         messagesDiv.appendChild(messageDiv);
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
     });
@@ -48,3 +73,4 @@
 
 </body>
 </html>
+
