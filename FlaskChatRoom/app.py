@@ -2,12 +2,12 @@ import os
 import random
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
-# from gevent import monkey
-# monkey.patch_all()
+from gevent import monkey
+monkey.patch_all()
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'aiyuechuang'
-# socketio = SocketIO(app, async_mode='gevent')
-socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode='gevent')
+# socketio = SocketIO(app)
 
 
 def get_random_avatar():
