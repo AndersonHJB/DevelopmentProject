@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flask 聊天应用</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        #messages {
+            height: 400px;
+            overflow-y: scroll;
+            border: 1px solid black;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>欢迎来到聊天室！</h1>
+
+<div id="messages"></div>
+<form id="chat-form">
+    <input type="text" id="message-input" autocomplete="off" placeholder="输入消息..."/>
+    <button type="submit">发送</button>
+</form>
+
+<script>
+    const socket = io();
+    const chatForm = document.getElementById('chat-form');
+    const messageInput = document.getElementById('message-input');
+    const messagesDiv = document.getElementById('messages');
+
+    chatForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        const message = messageInput.value.trim();
+        if (message.length > 0) {
+            socket.emit('send_message', {message: message});
+            messageInput.value = '';
+        }
+    });
+
+    socket.on('receive_message', function (data) {
+        const messageDiv = document.createElement('div');
+        messageDiv.textContent = data.message;
+        messagesDiv.appendChild(messageDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    });
+</script>
+
+</body>
+</html>

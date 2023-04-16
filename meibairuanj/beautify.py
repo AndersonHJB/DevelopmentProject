@@ -10,7 +10,7 @@ def beautify_image(image, ksize=5, sigma_color=75, sigma_space=75, whitening=0, 
     if len(faces) > 0:
         for face in faces:
             x, y, w, h = face.left(), face.top(), face.width(), face.height()
-            roi = image[y:y + h, x:x + w]
+            roi = image[y:y+h, x:x+w]
 
             # 磨皮
             roi = cv2.bilateralFilter(roi, ksize, sigma_color, sigma_space)
@@ -19,7 +19,6 @@ def beautify_image(image, ksize=5, sigma_color=75, sigma_space=75, whitening=0, 
             if whitening > 0:
                 lab = cv2.cvtColor(roi, cv2.COLOR_BGR2LAB)
                 l, a, b = cv2.split(lab)
-                # l = cv2.add(l, np.uint8([whitening]))
                 l = cv2.add(l, np.full_like(l, whitening, dtype=np.uint8))
                 lab = cv2.merge([l, a, b])
                 roi = cv2.cvtColor(lab, cv2.COLOR_LAB2BGR)
@@ -40,6 +39,7 @@ def beautify_image(image, ksize=5, sigma_color=75, sigma_space=75, whitening=0, 
                 hsv = cv2.merge([h, s, v])
                 roi = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
 
-            image[y:y + h, x:x + w] = roi
+            image[y:y+h, x:x+w] = roi
 
     return image
+
