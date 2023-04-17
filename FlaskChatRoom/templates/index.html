@@ -109,32 +109,48 @@
         }
     });
 
-    socket.on('receive_message', function (data) {
-        const messageElement = document.createElement('div');
-        messageElement.classList.add('message');
-        // 在消息中显示用户昵称
-        messageElement.innerHTML = `
-            <p><strong>${data.user_name}:</strong> ${data.message}</p>
-            <img src="${data.avatar_url}" alt="Avatar" width="32" height="32">
-        `;
-        messagesDiv.appendChild(messageElement);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    {#socket.on('receive_message', function (data) {#}
+    {#    const messageElement = document.createElement('div');#}
+    {#    messageElement.classList.add('message');#}
+    {#    // 在消息中显示用户昵称#}
+    {#    messageElement.innerHTML = `#}
+    {#        <p><strong>${data.user_name}:</strong> ${data.message}</p>#}
+    {#        <img src="${data.avatar_url}" alt="Avatar" width="32" height="32">#}
+    {#    `;#}
+    {#    messagesDiv.appendChild(messageElement);#}
+    {#    messagesDiv.scrollTop = messagesDiv.scrollHeight;#}
+    {##}
+    {#    const messageDiv = document.createElement('div');#}
+    {#    messageDiv.className = 'message';#}
+    {##}
+    {#    const avatarImg = document.createElement('img');#}
+    {#    avatarImg.src = data.avatar_url;#}
+    {#    avatarImg.className = 'avatar';#}
+    {#    messageDiv.appendChild(avatarImg);#}
+    {##}
+    {#    const textDiv = document.createElement('div');#}
+    {#    textDiv.textContent = data.message;#}
+    {#    messageDiv.appendChild(textDiv);#}
+    {##}
+    {#    messagesDiv.appendChild(messageDiv);#}
+    {#    messagesDiv.scrollTop = messagesDiv.scrollHeight;#}
+        <!-- }); -->
+    socket.on('receive_message', data => {
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('message');
 
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'message';
+    // 调整消息中的 HTML 结构和样式
+    messageElement.innerHTML = `
+        <img src="${data.avatar_url}" alt="Avatar" width="32" height="32">
+        <div class="message-info">
+            <div class="message-name">${data.user_name}</div>
+            <div>${data.message}</div>
+        </div>
+    `;
 
-        const avatarImg = document.createElement('img');
-        avatarImg.src = data.avatar_url;
-        avatarImg.className = 'avatar';
-        messageDiv.appendChild(avatarImg);
-
-        const textDiv = document.createElement('div');
-        textDiv.textContent = data.message;
-        messageDiv.appendChild(textDiv);
-
-        messagesDiv.appendChild(messageDiv);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    });
+    messagesDiv.appendChild(messageElement);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+});
 </script>
 
 </body>

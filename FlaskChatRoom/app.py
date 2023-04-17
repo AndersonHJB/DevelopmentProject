@@ -78,7 +78,7 @@ def handle_send_message(data):
     # socketio.emit('receive_message',
     #               {'user_id': user_id, 'user_name': user_name, 'avatar_url': avatar_url, 'message': message})
     if user is not None:
-        emit('receive_message', {'name': user.name, 'avatar_url': user.avatar_url, 'message': data['message']},
+        emit('receive_message', {'user_name': user.name, 'avatar_url': user.avatar_url, 'message': data['message']},
              broadcast=True)
 
 
