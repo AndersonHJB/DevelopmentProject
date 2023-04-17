@@ -1,0 +1,30 @@
+.message {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.message.mine {
+    justify-content: flex-end; /* 当前用户的消息右对齐 */
+}
+
+.message img {
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.message.mine img {
+    margin-right: 0;
+    margin-left: 10px;
+}
+
+.message-info {
+    background-color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.message-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
