@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flask 聊天应用</title>
     <script src="/static/js/socket.io.min.js"></script>
-{#    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.min.js"></script>#}
+    {#    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.min.js"></script>#}
     {#    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>#}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-{#    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>#}
+    {#    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>#}
     <link rel="stylesheet" href="/static/css/style.css">
     <style>
         #messages {
@@ -137,44 +137,72 @@
     {##}
     {#    messagesDiv.appendChild(messageDiv);#}
     {#    messagesDiv.scrollTop = messagesDiv.scrollHeight;#}
-        <!-- }); -->
-{#    socket.on('receive_message', data => {#}
-{#    const messageElement = document.createElement('div');#}
-{#    messageElement.classList.add('message');#}
-{##}
-{#    // 调整消息中的 HTML 结构和样式#}
-{#    messageElement.innerHTML = `#}
-{#        <img src="${data.avatar_url}" alt="Avatar" width="32" height="32">#}
-{#        <div class="message-info">#}
-{#            <div class="message-name">${data.user_name}</div>#}
-{#            <div>${data.message}</div>#}
-{#        </div>#}
-{#    `;#}
-{##}
-{#    messagesDiv.appendChild(messageElement);#}
-{#    messagesDiv.scrollTop = messagesDiv.scrollHeight;#}
-<!--);-->
+    <!-- }); -->
+    {#    socket.on('receive_message', data => {#}
+    {#    const messageElement = document.createElement('div');#}
+    {#    messageElement.classList.add('message');#}
+    {##}
+    {#    // 调整消息中的 HTML 结构和样式#}
+    {#    messageElement.innerHTML = `#}
+    {#        <img src="${data.avatar_url}" alt="Avatar" width="32" height="32">#}
+    {#        <div class="message-info">#}
+    {#            <div class="message-name">${data.user_name}</div>#}
+    {#            <div>${data.message}</div>#}
+    {#        </div>#}
+    {#    `;#}
+    {##}
+    {#    messagesDiv.appendChild(messageElement);#}
+    {#    messagesDiv.scrollTop = messagesDiv.scrollHeight;#}
+    <!--);-->
 
+    {#socket.on('receive_message', data => {#}
+    {#const messageElement = document.createElement('div');#}
+    {#messageElement.classList.add('message');#}
+    {##}
+    {#// 如果发送者是当前用户，则将消息右对齐#}
+    {#if (data.userName === userName) {#}
+    {#    messageElement.classList.add('mine');#}
+    {#}#}
+        {##}
+        {#messageElement.innerHTML = `#}
+        {#    <img src="${data.avatar_url}" alt="Avatar" width="32" height="32">#}
+        {#    <div class="message-info">#}
+        {#        <div class="message-name">${data.userName}</div>#}
+        {#        <div>${data.message}</div>#}
+        {#    </div>#}
+        {#`;#}
+        {##}
+        {#messagesDiv.appendChild(messageElement);#}
+        {#messagesDiv.scrollTop = messagesDiv.scrollHeight;#}
+        <!--});-->
         socket.on('receive_message', data => {
-        const messageElement = document.createElement('div');
-        messageElement.classList.add('message');
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
 
-        // 如果发送者是当前用户，则将消息右对齐
-        if (data.user_name === userName) {
-            messageElement.classList.add('mine');
-        }
+            const isMine = data.userName === userName;
+            if (isMine) {
+                messageElement.classList.add('mine');
+            }
 
-        messageElement.innerHTML = `
+            const messageHtml = isMine ? `
+            <div class="message-info">
+                <div class="message-name">${data.userName}</div>
+                <div>${data.message}</div>
+            </div>
+            <img src="${data.avatar_url}" alt="Avatar" width="32" height="32">
+        ` : `
             <img src="${data.avatar_url}" alt="Avatar" width="32" height="32">
             <div class="message-info">
-                <div class="message-name">${data.user_name}</div>
+                <div class="message-name">${data.userName}</div>
                 <div>${data.message}</div>
             </div>
         `;
 
-        messagesDiv.appendChild(messageElement);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    });
+            messageElement.innerHTML = messageHtml;
+
+            messagesDiv.appendChild(messageElement);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        });
 </script>
 
 </body>
