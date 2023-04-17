@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flask 聊天应用</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.min.js"></script>
+    {#    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>#}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         #messages {
@@ -25,16 +27,41 @@
             border-radius: 50%;
             margin-right: 10px;
         }
+
+        .message {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .message img {
+            border-radius: 50%; /* 让头像呈圆形显示 */
+            margin-right: 10px;
+        }
+
+        .message-info {
+            background-color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .message-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
 
 <h1>欢迎来到聊天室！</h1>
 
-<div id="messages"></div>
+<div id="messages">
+    <!-- 聊天消息将在这里显示 -->
+</div>
 {#<div id="messages-container" class="messages-container"></div>#}
 <form id="chat-form">
-    <input type="text" id="message-input" autocomplete="off" placeholder="输入消息..."/>
+    <input type="text" id="message-input" autocomplete="off" placeholder="输入消息" onkeypress="handleKeyPress(event)"/>
+    {#    <input type="text" id="message-input" autocomplete="off" placeholder="输入消息..."/>#}
     {#    <button type="submit">发送</button>#}
     <button id="send-button" onclick="sendMessage()">发送</button>
 </form>
@@ -43,7 +70,7 @@
     const socket = io();
     const userId = '{{ user.id }}';  // 添加此行以获取用户 ID
     const avatarUrl = '{{ user.avatar_url }}';  // 获取用户头像 URL
-    {#const userName = '{{ user.name }}';  // 获取用户昵称#}
+    const userName = '{{ user.name }}';  // 获取用户昵称
     const chatForm = document.getElementById('chat-form');
     const messageInput = document.getElementById('message-input');
     {#const messagesContainer = document.getElementById('messages-container');  // 确保已定义此变量#}
@@ -52,24 +79,25 @@
     const form = document.getElementById('chat-form');
     {#const messageInput = document.getElementById('message-input');#}
 
+    function handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    }
+
     function sendMessage() {
         const message = messageInput.value;
         if (message.length > 0) {
             socket.emit('send_message', {
-                user_id: userId,  // 将用户 ID 添加到发送的数据中
-                {#user_name: userName, // 将用户昵称添加到发送的数据中#}
-                avatar_url: avatarUrl, // 将用户头像 URL 添加到发送的数据中
+                user_id: userId,
+                user_name: userName, // 将用户昵称添加到发送的数据中
+                avatar_url: avatarUrl,
                 message: message
             });
             messageInput.value = '';
         }
     }
 
-    function handleKeyPress(event) {
-        if (event.key === 'Enter') {
-            sendMessage();
-        }
-    }
 
     chatForm.addEventListener('submit', function (event) {
         event.preventDefault();
@@ -82,14 +110,15 @@
     });
 
     socket.on('receive_message', function (data) {
-        {#const newMessage = document.createElement('div');#}
-        {#newMessage.classList.add('message');#}
-        {##}
-        {#// 在消息中显示用户昵称#}
-        {#newMessage.innerHTML = `<p><strong>${data.user_name}:</strong> ${data.message}</p>`;#}
-        {##}
-        {#messagesContainer.appendChild(newMessage);#}
-        {#messagesContainer.scrollTop = messagesContainer.scrollHeight;#}
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message');
+        // 在消息中显示用户昵称
+        messageElement.innerHTML = `
+            <p><strong>${data.user_name}:</strong> ${data.message}</p>
+            <img src="${data.avatar_url}" alt="Avatar" width="32" height="32">
+        `;
+        messagesDiv.appendChild(messageElement);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
         const messageDiv = document.createElement('div');
         messageDiv.className = 'message';
