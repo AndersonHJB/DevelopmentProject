@@ -15,6 +15,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 socketio = SocketIO(app, async_mode='gevent')
 
+
 # class User(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)
 #     name = db.Column(db.String(80), nullable=False)
@@ -69,7 +70,13 @@ def index():
 @socketio.on('send_message')
 def handle_send_message(data):
     user_id = data['user_id']
+    # user_name = data['user_name']  # 从数据中获取用户昵称
+    # avatar_url = data['avatar_url']
+    # message = data['message']
     user = User.query.get(user_id)
+    # # 将用户昵称添加到广播的消息中
+    # socketio.emit('receive_message',
+    #               {'user_id': user_id, 'user_name': user_name, 'avatar_url': avatar_url, 'message': message})
     if user is not None:
         emit('receive_message', {'name': user.name, 'avatar_url': user.avatar_url, 'message': data['message']},
              broadcast=True)

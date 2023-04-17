@@ -32,6 +32,7 @@
 <h1>欢迎来到聊天室！</h1>
 
 <div id="messages"></div>
+{#<div id="messages-container" class="messages-container"></div>#}
 <form id="chat-form">
     <input type="text" id="message-input" autocomplete="off" placeholder="输入消息..."/>
     {#    <button type="submit">发送</button>#}
@@ -42,8 +43,10 @@
     const socket = io();
     const userId = '{{ user.id }}';  // 添加此行以获取用户 ID
     const avatarUrl = '{{ user.avatar_url }}';  // 获取用户头像 URL
+    {#const userName = '{{ user.name }}';  // 获取用户昵称#}
     const chatForm = document.getElementById('chat-form');
     const messageInput = document.getElementById('message-input');
+    {#const messagesContainer = document.getElementById('messages-container');  // 确保已定义此变量#}
     const messagesDiv = document.getElementById('messages');
     {#const avatarUrl = "{{ avatar_url }}";#}
     const form = document.getElementById('chat-form');
@@ -54,6 +57,7 @@
         if (message.length > 0) {
             socket.emit('send_message', {
                 user_id: userId,  // 将用户 ID 添加到发送的数据中
+                {#user_name: userName, // 将用户昵称添加到发送的数据中#}
                 avatar_url: avatarUrl, // 将用户头像 URL 添加到发送的数据中
                 message: message
             });
@@ -78,6 +82,15 @@
     });
 
     socket.on('receive_message', function (data) {
+        {#const newMessage = document.createElement('div');#}
+        {#newMessage.classList.add('message');#}
+        {##}
+        {#// 在消息中显示用户昵称#}
+        {#newMessage.innerHTML = `<p><strong>${data.user_name}:</strong> ${data.message}</p>`;#}
+        {##}
+        {#messagesContainer.appendChild(newMessage);#}
+        {#messagesContainer.scrollTop = messagesContainer.scrollHeight;#}
+
         const messageDiv = document.createElement('div');
         messageDiv.className = 'message';
 
