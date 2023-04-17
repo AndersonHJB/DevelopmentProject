@@ -138,22 +138,43 @@
     {#    messagesDiv.appendChild(messageDiv);#}
     {#    messagesDiv.scrollTop = messagesDiv.scrollHeight;#}
         <!-- }); -->
-    socket.on('receive_message', data => {
-    const messageElement = document.createElement('div');
-    messageElement.classList.add('message');
+{#    socket.on('receive_message', data => {#}
+{#    const messageElement = document.createElement('div');#}
+{#    messageElement.classList.add('message');#}
+{##}
+{#    // 调整消息中的 HTML 结构和样式#}
+{#    messageElement.innerHTML = `#}
+{#        <img src="${data.avatar_url}" alt="Avatar" width="32" height="32">#}
+{#        <div class="message-info">#}
+{#            <div class="message-name">${data.user_name}</div>#}
+{#            <div>${data.message}</div>#}
+{#        </div>#}
+{#    `;#}
+{##}
+{#    messagesDiv.appendChild(messageElement);#}
+{#    messagesDiv.scrollTop = messagesDiv.scrollHeight;#}
+<!--);-->
 
-    // 调整消息中的 HTML 结构和样式
-    messageElement.innerHTML = `
-        <img src="${data.avatar_url}" alt="Avatar" width="32" height="32">
-        <div class="message-info">
-            <div class="message-name">${data.user_name}</div>
-            <div>${data.message}</div>
-        </div>
-    `;
+        socket.on('receive_message', data => {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message');
 
-    messagesDiv.appendChild(messageElement);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-});
+        // 如果发送者是当前用户，则将消息右对齐
+        if (data.user_name === userName) {
+            messageElement.classList.add('mine');
+        }
+
+        messageElement.innerHTML = `
+            <img src="${data.avatar_url}" alt="Avatar" width="32" height="32">
+            <div class="message-info">
+                <div class="message-name">${data.user_name}</div>
+                <div>${data.message}</div>
+            </div>
+        `;
+
+        messagesDiv.appendChild(messageElement);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    });
 </script>
 
 </body>
