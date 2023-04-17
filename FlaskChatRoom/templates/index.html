@@ -18,39 +18,9 @@
             padding: 5px;
         }
 
-        .message {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-
-        .message {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
         .message img {
             border-radius: 50%; /* 让头像呈圆形显示 */
             margin-right: 10px;
-        }
-
-        .message-info {
-            background-color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-
-        .message-name {
-            font-weight: bold;
-            margin-bottom: 5px;
         }
     </style>
 </head>
@@ -163,28 +133,28 @@
     {#if (data.userName === userName) {#}
     {#    messageElement.classList.add('mine');#}
     <!--}-->
-        {##}
-        {#messageElement.innerHTML = `#}
-        {#    <img src="${data.avatar_url}" alt="Avatar" width="32" height="32">#}
-        {#    <div class="message-info">#}
-        {#        <div class="message-name">${data.userName}</div>#}
-        {#        <div>${data.message}</div>#}
-        {#    </div>#}
-        {#`;#}
-        {##}
-        {#messagesDiv.appendChild(messageElement);#}
-        {#messagesDiv.scrollTop = messagesDiv.scrollHeight;#}
-        <!--});-->
-        socket.on('receive_message', data => {
-            const messageElement = document.createElement('div');
-            messageElement.classList.add('message');
+    {##}
+    {#messageElement.innerHTML = `#}
+    {#    <img src="${data.avatar_url}" alt="Avatar" width="32" height="32">#}
+    {#    <div class="message-info">#}
+    {#        <div class="message-name">${data.userName}</div>#}
+    {#        <div>${data.message}</div>#}
+    {#    </div>#}
+    {#`;#}
+    {##}
+    {#messagesDiv.appendChild(messageElement);#}
+    {#messagesDiv.scrollTop = messagesDiv.scrollHeight;#}
+    <!--});-->
+    socket.on('receive_message', data => {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message');
 
-            const isMine = data.userName === userName;
-            if (isMine) {
-                messageElement.classList.add('mine');
-            }
+        const isMine = data.userName === userName;
+        if (isMine) {
+            messageElement.classList.add('mine');
+        }
 
-            const messageHtml = isMine ? `
+        const messageHtml = isMine ? `
             <div class="message-info">
                 <div class="message-name">${data.userName}</div>
                 <div>${data.message}</div>
@@ -198,11 +168,11 @@
             </div>
         `;
 
-            messageElement.innerHTML = messageHtml;
+        messageElement.innerHTML = messageHtml;
 
-            messagesDiv.appendChild(messageElement);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        });
+        messagesDiv.appendChild(messageElement);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    });
 </script>
 
 </body>
