@@ -9,7 +9,7 @@
     {#    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>#}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     {#    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>#}
-        <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/style.css">
     <style>
         #messages {
             height: 400px;
@@ -145,6 +145,34 @@
     {#messagesDiv.appendChild(messageElement);#}
     {#messagesDiv.scrollTop = messagesDiv.scrollHeight;#}
     <!--});-->
+    {#socket.on('receive_message', data => {#}
+    {#    const messageElement = document.createElement('div');#}
+    {#    messageElement.classList.add('message');#}
+    {##}
+    {#    const isMine = data.userName === userName;#}
+    {#    if (isMine) {#}
+    {#        messageElement.classList.add('mine');#}
+    {#    }#}
+    {##}
+    {#    const messageHtml = isMine ? `#}
+    {#        <div class="message-info">#}
+    {#            <div class="message-name">${data.userName}</div>#}
+    {#            <div>${data.message}</div>#}
+    {#        </div>#}
+    {#        <img src="${data.avatar_url}" alt="Avatar" width="32" height="32">#}
+    {#    ` : `#}
+    {#        <img src="${data.avatar_url}" alt="Avatar" width="32" height="32">#}
+    {#        <div class="message-info">#}
+    {#            <div class="message-name">${data.userName}</div>#}
+    {#            <div>${data.message}</div>#}
+    {#        </div>#}
+    {#    `;#}
+    {##}
+    {#    messageElement.innerHTML = messageHtml;#}
+    {##}
+    {#    messagesDiv.appendChild(messageElement);#}
+    {#    messagesDiv.scrollTop = messagesDiv.scrollHeight;#}
+    <!--});-->
     socket.on('receive_message', data => {
         const messageElement = document.createElement('div');
         messageElement.classList.add('message');
@@ -155,13 +183,11 @@
         }
 
         const messageHtml = isMine ? `
-            <div class="message-info">
-                <div class="message-name">${data.userName}</div>
-                <div>${data.message}</div>
-            </div>
-            <img src="${data.avatar_url}" alt="Avatar" width="32" height="32">
+            <div class="message-name">${data.userName}</div>
+            <div class="message-info">${data.message}</div>
+            <img src="${data.avatar_url}" alt="Avatar">
         ` : `
-            <img src="${data.avatar_url}" alt="Avatar" width="32" height="32">
+            <img src="${data.avatar_url}" alt="Avatar">
             <div class="message-info">
                 <div class="message-name">${data.userName}</div>
                 <div>${data.message}</div>

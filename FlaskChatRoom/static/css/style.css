@@ -24,9 +24,78 @@
     border-radius: 5px;
 }
 
+/*.message-name {*/
+/*    font-weight: bold;*/
+/*    margin-bottom: 5px;*/
+/*}*/
+
 .message-name {
+    font-size: 12px;
     font-weight: bold;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
+}
+
+.message.mine .message-name {
+    text-align: right;
+    color: #0b93f6;
+}
+
+/* IOS UI */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+#messages {
+    padding: 20px;
+    max-height: 80vh;
+    overflow-y: scroll;
+}
+
+.message {
+    display: flex;
+    align-items: flex-end;
+    margin-bottom: 10px;
+}
+
+.message.mine {
+    justify-content: flex-end;
+}
+
+.message img {
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+}
+
+.message.mine img {
+    margin-left: 10px;
+    margin-right: 0;
+}
+
+.message-info {
+    max-width: 60%;
+    padding: 8px 12px;
+    border-radius: 18px;
+    font-size: 16px;
+    word-wrap: break-word;
+    line-height: 1.5;
+}
+
+.message.mine .message-info {
+    background-color: #0b93f6;
+    color: white;
+    border-bottom-right-radius: 0;
+}
+
+.message .message-info {
+    background-color: white;
+    color: #333;
+    border-bottom-left-radius: 0;
+    margin-left: 10px;
 }
 
 /** {*/
