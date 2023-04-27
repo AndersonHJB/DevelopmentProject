@@ -64,7 +64,7 @@ def index():
     user = User.query.get(user_id)
     if user is None:
         return redirect(url_for('login'))
-    return render_template('index.html', user=user)
+    return render_template('1.html', user=user)
 
 
 @socketio.on('send_message')
@@ -83,6 +83,6 @@ def handle_send_message(data):
 
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
+    # with app.app_context():
+    #     db.create_all()
     socketio.run(app, host='0.0.0.0', port=8000, websocket='gevent')

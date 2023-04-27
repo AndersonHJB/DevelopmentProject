@@ -24,10 +24,21 @@
     border-radius: 5px;
 }
 
-/*.message-name {*/
-/*    font-weight: bold;*/
-/*    margin-bottom: 5px;*/
-/*}*/
+.message-date {
+    font-size: 10px;
+    color: #999;
+    position: absolute;
+    bottom: -18px;
+    white-space: nowrap;
+}
+
+.message.mine .message-date {
+    right: 10px;
+}
+
+.message .message-date {
+    left: 10px;
+}
 
 .message-name {
     font-size: 12px;
@@ -60,8 +71,13 @@ body {
     margin-bottom: 10px;
 }
 
+/*.message.mine {*/
+/*    justify-content: flex-end;*/
+/*}*/
+
 .message.mine {
-    justify-content: flex-end;
+    flex-direction: column;
+    align-items: flex-end;
 }
 
 .message img {
@@ -83,12 +99,21 @@ body {
     font-size: 16px;
     word-wrap: break-word;
     line-height: 1.5;
+    position: relative;
+    margin-top: 2px;
 }
+
+/*.message.mine .message-info {*/
+/*    background-color: #0b93f6;*/
+/*    color: white;*/
+/*    border-bottom-right-radius: 0;*/
+/*}*/
 
 .message.mine .message-info {
     background-color: #0b93f6;
+    flex-direction: column;
     color: white;
-    border-bottom-right-radius: 0;
+    align-items: flex-end;
 }
 
 .message .message-info {
