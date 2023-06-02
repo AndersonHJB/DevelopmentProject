@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask 聊天应用</title>
+    <script src="/static/js/socket.io.min.js"></script>
+    {#    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.min.js"></script>#}
+    {#    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>#}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {#    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>#}
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        #messages {
+            height: 400px;
+            overflow-y: scroll;
+            border: 1px solid black;
+            padding: 5px;
+        }
+
+        .message img {
+            border-radius: 50%; /* 让头像呈圆形显示 */
+            margin-right: 10px;
+        }
+
+        .message.mine {
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        .message-info {
+            /* ... (其他 CSS 代码不变) */
+            margin-top: 2px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>欢迎来到聊天室！</h1>
+
+<div id="messages">
+    <!-- 聊天消息将在这里显示 -->
+</div>
+{#<div id="messages-container" class="messages-container"></div>#}
+<form id="chat-form">
+    <input type="text" id="message-input" autocomplete="off" placeholder="输入消息" onkeypress="handleKeyPress(event)"/>
+    {#    <input type="text" id="message-input" autocomplete="off" placeholder="输入消息..."/>#}
+    {#    <button type="submit">发送</button>#}
+    <button id="send-button" onclick="sendMessage()">发送</button>
+</form>
+
+<script>
+    const socket = io();
+    const userId = '{{ user.id }}';  // 添加此行以获取用户 ID
+    const avatarUrl = '{{ user.avatar_url }}';  // 获取用户头像 URL
+    const userName = '{{ user.name }}';  // 获取用户昵称
+    const chatForm = document.getElementById('chat-form');
+    const messageInput = document.getElementById('message-input');
+    {#const messagesContainer = document.getElementById('messages-container');  // 确保已定义此变量#}
+    const messagesDiv = document.getElementById('messages');
+    {#const avatarUrl = "{{ avatar_url }}";#}
+    const form = document.getElementById('chat-form');
+    {#const messageInput = document.getElementById('message-input');#}
+
+    function handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    }
+
+    function sendMessage() {
+        const message = messageInput.value;
+        if (message.length > 0) {
+            socket.emit('send_message', {
+                user_id: userId,
+                user_name: userName, // 将用户昵称添加到发送的数据中
+                avatar_url: avatarUrl,
+                message: message
+            });
+            messageInput.value = '';
+        }
+    }
+
+
+    chatForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        {#sendMessage();#}
+        const message = messageInput.value.trim();
+        if (message.length > 0) {
+            socket.emit('send_message', {message: message, avatar_url: avatarUrl});
+            messageInput.value = '';
+        }
+    });
+
+    {#socket.on('receive_message', function (data) {#}
+    {#    const messageElement = document.createElement('div');#}
+    {#    messageElement.classList.add('message');#}
+    {#    // 在消息中显示用户昵称#}
+    {#    messageElement.innerHTML = `#}
+    {#        <p><strong>${data.user_name}:</strong> ${data.message}</p>#}
+    {#        <img src="${data.avatar_url}" alt="Avatar" width="32" height="32">#}
+    {#    `;#}
+    {#    messagesDiv.appendChild(messageElement);#}
+    {#    messagesDiv.scrollTop = messagesDiv.scrollHeight;#}
+    {##}
+    {#    const messageDiv = document.createElement('div');#}
+    {#    messageDiv.className = 'message';#}
+    {##}
+    {#    const avatarImg = document.createElement('img');#}
+    {#    avatarImg.src = data.avatar_url;#}
+    {#    avatarImg.className = 'avatar';#}
+    {#    messageDiv.appendChild(avatarImg);#}
+    {##}
+    {#    const textDiv = document.createElement('div');#}
+    {#    textDiv.textContent = data.message;#}
+    {#    messageDiv.appendChild(textDiv);#}
+    {##}
+    {#    messagesDiv.appendChild(messageDiv);#}
+    {#    messagesDiv.scrollTop = messagesDiv.scrollHeight;#}
+    <!-- }); -->
+    {#    socket.on('receive_message', data => {#}
+    {#    const messageElement = document.createElement('div');#}
+    {#    messageElement.classList.add('message');#}
+    {##}
+    {#    // 调整消息中的 HTML 结构和样式#}
+    {#    messageElement.innerHTML = `#}
+    {#        <img src="${data.avatar_url}" alt="Avatar" width="32" height="32">#}
+    {#        <div class="message-info">#}
+    {#            <div class="message-name">${data.user_name}</div>#}
+    {#            <div>${data.message}</div>#}
+    {#        </div>#}
+    {#    `;#}
+    {##}
+    {#    messagesDiv.appendChild(messageElement);#}
+    {#    messagesDiv.scrollTop = messagesDiv.scrollHeight;#}
+    <!--);-->
+
+    {#socket.on('receive_message', data => {#}
+    {#const messageElement = document.createElement('div');#}
+    {#messageElement.classList.add('message');#}
+    {##}
+    {#// 如果发送者是当前用户，则将消息右对齐#}
+    {#if (data.userName === userName) {#}
+    {#    messageElement.classList.add('mine');#}
+    <!--}-->
+    {##}
+    {#messageElement.innerHTML = `#}
+    {#    <img src="${data.avatar_url}" alt="Avatar" width="32" height="32">#}
+    {#    <div class="message-info">#}
+    {#        <div class="message-name">${data.userName}</div>#}
+    {#        <div>${data.message}</div>#}
+    {#    </div>#}
+    {#`;#}
+    {##}
+    {#messagesDiv.appendChild(messageElement);#}
+    {#messagesDiv.scrollTop = messagesDiv.scrollHeight;#}
+    <!--});-->
+    {#socket.on('receive_message', data => {#}
+    {#    const messageElement = document.createElement('div');#}
+    {#    messageElement.classList.add('message');#}
+    {##}
+    {#    const isMine = data.userName === userName;#}
+    {#    if (isMine) {#}
+    {#        messageElement.classList.add('mine');#}
+    {#    }#}
+    {##}
+    {#    const messageHtml = isMine ? `#}
+    {#        <div class="message-info">#}
+    {#            <div class="message-name">${data.userName}</div>#}
+    {#            <div>${data.message}</div>#}
+    {#        </div>#}
+    {#        <img src="${data.avatar_url}" alt="Avatar" width="32" height="32">#}
+    {#    ` : `#}
+    {#        <img src="${data.avatar_url}" alt="Avatar" width="32" height="32">#}
+    {#        <div class="message-info">#}
+    {#            <div class="message-name">${data.userName}</div>#}
+    {#            <div>${data.message}</div>#}
+    {#        </div>#}
+    {#    `;#}
+    {##}
+    {#    messageElement.innerHTML = messageHtml;#}
+    {##}
+    {#    messagesDiv.appendChild(messageElement);#}
+    {#    messagesDiv.scrollTop = messagesDiv.scrollHeight;#}
+    <!--});-->
+    socket.on('receive_message', data => {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message');
+
+        const isMine = data.userName === userName;
+        if (isMine) {
+            messageElement.classList.add('mine');
+        }
+
+        const currentDate = new Date().toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+
+        const messageHtml = isMine ? `
+            <div class="message-name">${data.userName}</div>
+            <div class="message-info">${data.message}<div class="message-date">${currentDate}</div></div>
+            <img src="${data.avatar_url}" alt="Avatar">
+        ` : `
+            <img src="${data.avatar_url}" alt="Avatar">
+            <div class="message-info">
+                <div class="message-name">${data.userName}</div>
+                <div>${data.message}</div>
+                <div class="message-date">${currentDate}</div>
+            </div>
+        `;
+
+        messageElement.innerHTML = messageHtml;
+
+        messagesDiv.appendChild(messageElement);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    });
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="/static/js/jquery.min.js"></script>
+	</head>
+	<style>
+		/* .file-upload { 
+		   display: none; // 设置上传文件的input隐藏
+		} */
+	</style>
+	<body>
+	<div style="width: 400px;height: 300px;margin-left: 500px">
+		<div class="col-md-5">
+			<img id="img-avatar" style="width: 400px;height: 500px" src="../images/index/user.jpg" class="img-responsive" alt="无法显示默认头像" />
+		</div>
+		<div class="col-md-offset-2 col-md-4">
+			<input id="chooseImage" type="file" name="file" accept="image/*">
+		</div>
+		<div class="col-md-offset-2 col-md-4">
+			<button id="mopi">磨皮</button>
+			<button id="meibai">美白</button>
+			<button id="quban">祛斑</button>
+			<button id="bao">纯红</button>
+		</div>
+
+	</div>
+		<script>
+			$("#chooseImage").on('change',function(){
+				const files = document.querySelector('input[type=file]')
+				let filePath = $(this).val(); //获取到input的value，里面是文件的路径
+				let fileFormat = filePath.substring(filePath.lastIndexOf(".")).toLowerCase(); //获取文件后缀
+				let src = window.URL.createObjectURL(this.files[0]); //转成可以在本地预览的格式
+				var reader = new FileReader();
+				// 检查是否是图片
+				if( !fileFormat.match(/.jpg/) ) {
+					//error_prompt_alert
+					alert('上传错误,文件格式必须为：png/jpg/jpeg/bmp/gif');
+					return ;
+				}
+				$('#img-avatar').attr('src', src); //将图片地址放置在img的src中。
+				reader.readAsDataURL(files.files[0]);
+				reader.onloadend = function () {
+					var base64 = reader.result;
+					console.log(base64);
+					$.ajax({
+						url:'/predict',
+						method: 'post',
+						data:{'data':base64},
+						success: function (res) {
+							alert(res['action'])
+
+						}
+					})
+
+				}
+			});
+			$('#mopi').click(function () {
+				$.ajax({
+					url:'/mopi',
+					method: 'get',
+					success:function(res){
+						document.getElementById('img-avatar').src=res['path']
+					}
+				})
+
+
+			})
+			$('#meibai').click(function () {
+				$.ajax({
+					url:'/meibai',
+					method: 'get',
+					success:function(res){
+						document.getElementById('img-avatar').src=res['path']
+					}
+				})
+
+
+			})
+			$('#quban').click(function () {
+				$.ajax({
+					url:'/quban',
+					method: 'get',
+					success:function(res){
+						document.getElementById('img-avatar').src=res['path']
+					}
+				})
+
+
+			})
+			$('#bao').click(function () {
+				$.ajax({
+					url:'/bao',
+					method: 'get',
+					success:function(res){
+						document.getElementById('img-avatar').src=res['path']
+					}
+				})
+
+
+			})
+		</script>
+	</body>
+</html>

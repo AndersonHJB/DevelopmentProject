@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>登录 - Flask 聊天应用</title>
+    <style>
+        .avatar {
+            width: 80px;
+            height: 80px;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .avatar.selected {
+            border-color: blue;
+        }
+    </style>
+</head>
+<body>
+
+<h1>登录聊天室</h1>
+
+<form method="post" action="{{ url_for('login') }}">
+    <label>
+        名称：
+        <input type="text" name="name" required/>
+    </label>
+    <br/>
+    <br/>
+    选择头像：
+    <br/>
+    <input type="hidden" name="avatar_url" id="avatar-url-input"/>
+    <div>
+        {% for avatar in avatars %}
+            <img src="{{ avatar }}" class="avatar" onclick="selectAvatar('{{ avatar }}')"/>
+        {% endfor %}
+    </div>
+    <br/>
+    <button type="submit">登录</button>
+</form>
+
+<script>
+    const avatars = document.querySelectorAll('.avatar');
+    const avatarUrlInput = document.getElementById('avatar-url-input');
+
+    function selectAvatar(avatarUrl) {
+        avatars.forEach(avatar => {
+            if (avatar.src.endsWith(avatarUrl)) {
+                avatar.classList.add('selected');
+                avatarUrlInput.value = avatarUrl;
+            } else {
+                avatar.classList.remove('selected');
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
+
