@@ -79,7 +79,7 @@ def content():
                 if password_entry.valid_days == -1 or \
                         datetime.utcnow() - password_entry.created_at < timedelta(days=password_entry.valid_days):
                     # return 'Here is the content...'
-                    return str(open("./link.txt", "r").read())
+                    return str(open("link.html", "r").read())
                 else:
                     return 'Password expired'
         return 'Invalid password'

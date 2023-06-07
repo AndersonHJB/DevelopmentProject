@@ -1,13 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>View Content</title>
+    <meta charset="UTF-8">
+    <title>Pure CSS &quot;Authentication&quot; 😅🔒</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-<h1>Enter Password to View Content</h1>
+<!-- partial:index.partial.html -->
 <form method="post">
-    Password: <input type="text" name="password"><br>
-    <input type="submit" value="Submit">
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" placeholder="Enter your password" required="required"
+           title="Enter your password"/>
+    <button class="login-button" type="submit"><span>Enter</span>
+        <svg>
+            <path d="M10,17V14H3V10H10V7L15,12L10,17M7,2H17A2,2 0 0,1 19,4V20A2,2 0 0,1 17,22H7A2,2 0 0,1 5,20V16H7V20H17V4H7V8H5V4A2,2 0 0,1 7,2Z"></path>
+        </svg>
+    </button>
+    <div class="padlock">
+        <div class="padlock__hook">
+            <div class="padlock__hook-body"></div>
+            <div class="padlock__hook-body"></div>
+        </div>
+        <div class="padlock__body">
+            <div class="padlock__face">
+                <div class="padlock__eye padlock__eye--left"></div>
+                <div class="padlock__eye padlock__eye--right"></div>
+                <div class="padlock__mouth padlock__mouth--one"></div>
+                <div class="padlock__mouth padlock__mouth--two"></div>
+                <div class="padlock__mouth padlock__mouth--three"></div>
+            </div>
+        </div>
+    </div>
 </form>
+<!-- partial -->
+<script src="/static/js/script.js"></script>
+
 </body>
 </html>
+
