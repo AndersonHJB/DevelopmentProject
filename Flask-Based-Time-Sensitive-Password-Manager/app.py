@@ -1,6 +1,7 @@
-from flask import Flask, request, render_template, redirect, url_for
 from models import Admin, Password
 from datetime import datetime, timedelta
+from apscheduler.schedulers.background import BackgroundScheduler
+from flask import Flask, request, render_template, redirect, url_for, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 import pickle
 
@@ -86,6 +87,22 @@ def content():
     else:
         return render_template('content.html')
 
+
+def delete_expired_passwords():
+    with open('passwords.pickle', 'rb') as f:
+        passwords = pickle.load(f)
+
+    for password in passwords:
+        if password.valid_days != -1 and datetime.now() > password.created_at + timedelta(days=password.valid_days):
+            passwords.remove(password)
+
+    with open('passwords.pickle', 'wb') as f:
+        pickle.dump(passwords, f)
+
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=delete_expired_passwords, trigger="interval", seconds=3600)
+scheduler.start()
 
 if __name__ == '__main__':
     app.run(debug=True)
