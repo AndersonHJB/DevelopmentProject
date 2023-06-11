@@ -9,7 +9,7 @@ from database import Database
 
 s = socket.socket()
 host = 'localhost'
-port = 12345
+port = 8088
 
 s.bind((host, port))
 s.listen(5)

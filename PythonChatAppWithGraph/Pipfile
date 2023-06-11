@@ -4,6 +4,8 @@ verify_ssl = true
 name = "pip_conf_index_global"
 
 [packages]
+numpy = "*"
+matplotlib = "*"
 
 [dev-packages]
 
